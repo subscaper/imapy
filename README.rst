@@ -1,6 +1,8 @@
 Imapy: Imap for Humans
 ======================
 
+ # Modification to line 152 - incorporated fix from issue #13.
+ # Inclusion to look for defang'd urls - "_get_defang"
 
 Imapy is an MIT Licensed IMAP library, written in Python.
 It makes processing emails in your email box easy.
@@ -44,7 +46,7 @@ Imapy changes that.
     >>> )
     >>> for email in emails:
     >>>     email.move('Important').mark(['Flagged', 'Unseen'])
-    >>> 
+    >>>
 
 **Print some email details:**
 

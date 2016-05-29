@@ -80,6 +80,18 @@ class EmailMessage(CaseInsensitiveDict):
 
         return list(set(links))
 
+
+    def _get_defang(self, text):
+        links = []
+        """Returns list of sanitized links in text"""
+        matches = re.findall(
+            '(?:meow?|hxxp?)[^\s]+', text, re.I)
+        if(matches):
+            for match in matches:
+                defang.append(match)
+
+        return list(set(defang))
+
     def mark(self, flags):
         """Alias function for imapy.mark()"""
         if not isinstance(flags, list):
@@ -118,7 +130,8 @@ class EmailMessage(CaseInsensitiveDict):
                 {
                     'text': text,
                     'text_normalized': self._normalize_string(text),
-                    'links': self._get_links(text)
+                    'links': self._get_links(text),
+                    'defang': self._get_defang(text)
                 }
             )
         # check attachments
@@ -136,7 +149,8 @@ class EmailMessage(CaseInsensitiveDict):
                             'text': text,
                             'text_normalized':
                                 self._normalize_string(text),
-                            'links': self._get_links(text)
+                            'links': self._get_links(text),
+                            'defang':self._get_defang(text)
                         }
                     )
                 elif content_type == 'text/html':
@@ -149,7 +163,7 @@ class EmailMessage(CaseInsensitiveDict):
                     # rare cases when we get decoding error
                     except AssertionError:
                         data = None
-                    attachment_fname = decode_header(part.get_filename())
+                    attachment_fname = decode_header(part.get_filename() or '')
                     filename = self.clean_value(
                         attachment_fname[0][0], attachment_fname[0][1]
                     )
